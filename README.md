@@ -32,7 +32,7 @@ Usage of graphite-web-proxy:
 
 - download the proxy. 
 ```
-go install github.com/raintank/graphite-web-proxy
+go get github.com/raintank/graphite-web-proxy
 ```
 - run the proxy
 ```
