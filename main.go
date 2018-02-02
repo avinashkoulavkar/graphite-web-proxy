@@ -17,12 +17,14 @@ var (
 	TSDB_URL string
 	APIKEY   string
 	ADDR     string
+	ORGID    int
 )
 
 func init() {
 	flag.StringVar(&TSDB_URL, "tsdb-url", "https://tsdb-x-foo.hosted-metrics.grafana.net", "gateway address of hosted-metrics service.")
 	flag.StringVar(&APIKEY, "api-key", "xxxxxx", "grafana.com api key")
 	flag.StringVar(&ADDR, "addr", "0.0.0.0:8181", "host:port to listen on.")
+	flag.IntVar(&ORGID, "org", 0, "Include X-Tsdb-Org header, required when using an admin api-key")
 }
 
 func main() {
@@ -43,7 +45,9 @@ func main() {
 			req.Host = u.Host
 			req.URL.Path = path.Join("/graphite", req.URL.Path)
 			glog.V(5).Infof("path rewriten to %s", req.URL.Path)
-
+			if ORGID != 0 {
+				req.Header.Set("X-Tsdb-Org", fmt.Sprintf("%d", ORGID))
+			}
 			req.ParseMultipartForm(1024 * 1024 * 10)
 			data := req.Form
 
